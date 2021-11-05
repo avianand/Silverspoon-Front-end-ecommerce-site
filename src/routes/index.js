@@ -10,6 +10,9 @@ import AuthGuard from '../guards/AuthGuard';
 // import RoleBasedGuard from '../guards/RoleBasedGuard';
 // components
 import LoadingScreen from '../components/LoadingScreen';
+import OrderList from '../pages/dashboard/admin/Order/OrderList';
+import OrderView from '../pages/dashboard/admin/Order/OrderView';
+import Banner from '../pages/dashboard/admin/Banner';
 
 // ----------------------------------------------------------------------
 
@@ -80,7 +83,7 @@ export default function Router() {
         { path: 'app', element: <GeneralApp /> },
         { path: 'ecommerce', element: <GeneralEcommerce /> },
         { path: 'banking', element: <GeneralBanking /> },
-        { path: 'booking', element: <GeneralBooking /> },
+        { path: 'banner', element: <Banner /> },
         {
           path: 'analytics',
           element: <GeneralAnalytics />
@@ -99,6 +102,15 @@ export default function Router() {
           ]
         },
         {
+          path: 'order',
+          children: [
+            { path: '/', element: <Navigate to="/dashboard/e-commerce/shop" replace /> },
+            { path: 'view/:id', element: <OrderView /> },
+            { path: 'list', element: <OrderList /> },
+            { path: 'invoice', element: <EcommerceInvoice /> }
+          ]
+        },
+        {
           path: 'user',
           children: [
             { path: '/', element: <Navigate to="/dashboard/user/profile" replace /> },
@@ -110,6 +122,7 @@ export default function Router() {
             { path: 'account', element: <UserAccount /> }
           ]
         },
+
         // {
         //   path: 'blog',
         //   children: [
@@ -137,7 +150,7 @@ export default function Router() {
         //     { path: ':conversationKey', element: <Chat /> }
         //   ]
         // },
-        { path: 'calendar', element: <Calendar /> },
+        { path: 'calendar', element: <Calendar /> }
         // { path: 'kanban', element: <Kanban /> }
       ]
     },

@@ -14,11 +14,11 @@ const initialState = {
   product: null,
   sortBy: null,
   filters: {
-    gender: [],
+    hasEgg: '',
+    isCake: '',
+    price: '',
     category: 'All',
-    colors: [],
-    priceRange: '',
-    rating: ''
+    createdAt: ''
   },
   checkout: {
     activeStep: 0,
@@ -69,11 +69,11 @@ const slice = createSlice({
     },
 
     filterProducts(state, action) {
-      state.filters.gender = action.payload.gender;
+      state.filters.hasEgg = action.payload.hasEgg;
       state.filters.category = action.payload.category;
-      state.filters.colors = action.payload.colors;
-      state.filters.priceRange = action.payload.priceRange;
-      state.filters.rating = action.payload.rating;
+      state.filters.isCake = action.payload.isCake;
+      state.filters.price = action.payload.price;
+      state.filters.createdAt = action.payload.createdAt;
     },
 
     // CHECKOUT

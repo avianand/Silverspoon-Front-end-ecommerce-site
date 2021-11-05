@@ -26,13 +26,13 @@ import {
   FormControlLabel
 } from '@material-ui/core';
 // utils
-import fakeRequest from '../../../utils/fakeRequest';
+import fakeRequest from '../../../../utils/fakeRequest';
 // routes
-import { PATH_DASHBOARD } from '../../../routes/paths';
+import { PATH_DASHBOARD } from '../../../../routes/paths';
 //
-import { QuillEditor } from '../../editor';
-import { UploadMultiFile } from '../../upload';
-import { IMAGE_CDN_URL } from '../../../_apis_/urls';
+import { QuillEditor } from '../../../editor';
+import { UploadMultiFile } from '../../../upload';
+import { IMAGE_CDN_URL } from '../../../../_apis_/urls';
 
 // ----------------------------------------------------------------------
 
@@ -85,12 +85,12 @@ const LabelStyle = styled(Typography)(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-ProductNewForm.propTypes = {
+OrderForm.propTypes = {
   isEdit: PropTypes.bool,
   currentProduct: PropTypes.object
 };
 
-export default function ProductNewForm({ isEdit, currentProduct }) {
+export default function OrderForm({ isEdit, currentProduct }) {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
 

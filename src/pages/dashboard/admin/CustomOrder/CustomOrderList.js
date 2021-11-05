@@ -104,7 +104,7 @@ export default function EcommerceProductList() {
   const { products } = useSelector((state) => state.product);
   const [subCategories, setsubCategories] = useState([]);
   const [page, setPage] = useState(0);
-  const [order, setOrder] = useState('desc');
+  const [order, setOrder] = useState('asc');
   const [selected, setSelected] = useState([]);
   const [filterName, setFilterName] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -253,7 +253,7 @@ export default function EcommerceProductList() {
                           </Label>
                         </TableCell>
 
-                        <TableCell align="right"> {fCurrency(price)}</TableCell>
+                        <TableCell align="right">₹ {fCurrency(price)}</TableCell>
 
                         <TableCell align="right">
                           <ProductMoreMenu onDelete={() => handleDeleteProduct(id)} productName={name} />

@@ -1,0 +1,49 @@
+.inputfile {
+  margin: -1.5rem 1em 0 1.5rem;
+    border: 1px solid rgb(152, 212, 209);
+    border-radius: 2px;
+    width: 80%;
+   
+    overflow: hidden;
+    
+   
+}
+
+
+.inputfile + label {
+  cursor: pointer; /* "hand" cursor */
+  width: 80%;
+}
+.form-inline{
+  padding: 5px 0 10px 0;
+  margin: 1.5rem;
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  border-bottom: 1px solid lightgrey;
+  border-radius: 2px;
+}
+#submitButton{margin-top: -1.5rem;}
+.formlabel{
+  margin-left: 1.5rem;
+}
+@media (max-width: 1025px) {
+  .form-inline input {
+    margin: 0.5rem ;
+    align-items: center;
+  }
+
+  .form-inline {
+    flex-flow: column wrap;
+    align-items: stretch;
+  }
+  #submitButton{margin-top: 0.5rem;}
+  .inputfile {
+   
+      border: 1px solid rgb(152, 212, 209);
+      border-radius: 2px;
+      width: 100%;
+      overflow: hidden;
+ 
+  }
+}

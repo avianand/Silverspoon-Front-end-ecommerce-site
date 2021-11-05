@@ -46,7 +46,7 @@ const sidebarConfig = [
         path: PATH_DASHBOARD.general.app,
         icon: ICONS.dashboard
       },
-      { title: 'e-commerce', path: PATH_DASHBOARD.general.ecommerce, icon: ICONS.ecommerce },
+      { title: 'e-commerce', path: PATH_DASHBOARD.general.ecommerce, icon: ICONS.ecommerce }
       // { title: 'analytics', path: PATH_DASHBOARD.general.analytics, icon: ICONS.analytics },
       // { title: 'banking', path: PATH_DASHBOARD.general.banking, icon: ICONS.banking },
       // { title: 'booking', path: PATH_DASHBOARD.general.booking, icon: ICONS.booking }
@@ -62,7 +62,7 @@ const sidebarConfig = [
       {
         title: 'My Account',
         path: PATH_DASHBOARD.user.account,
-        icon: ICONS.user,
+        icon: ICONS.user
         // children: [
         //   { title: 'profile', path: PATH_DASHBOARD.user.account },
         //   // { title: 'cards', path: PATH_DASHBOARD.user.cards },
@@ -70,7 +70,7 @@ const sidebarConfig = [
         //   // { title: 'create', path: PATH_DASHBOARD.user.newUser },
         //   // { title: 'edit', path: PATH_DASHBOARD.user.account },
         //   // { title: 'account', path: PATH_DASHBOARD.user.account }
-          
+
         // ]
       },
 
@@ -81,11 +81,8 @@ const sidebarConfig = [
         icon: ICONS.cart,
         info: <Label color="error">2</Label>,
         children: [
-       
-          { title: 'view', path: PATH_DASHBOARD.eCommerce.list },
-          { title: 'create', path: PATH_DASHBOARD.eCommerce.newProduct },
-          { title: 'edit', path: PATH_DASHBOARD.eCommerce.editById },
-          
+          { title: 'list', path: PATH_DASHBOARD.order.list },
+          { title: 'view', path: PATH_DASHBOARD.order.view }
         ]
       },
 
@@ -96,11 +93,9 @@ const sidebarConfig = [
         icon: ICONS.customorders,
         info: <Label color="error">2</Label>,
         children: [
-       
           { title: 'view', path: PATH_DASHBOARD.eCommerce.list },
           { title: 'create', path: PATH_DASHBOARD.eCommerce.newProduct },
-          { title: 'edit', path: PATH_DASHBOARD.eCommerce.editById },
-          
+          { title: 'edit', path: PATH_DASHBOARD.eCommerce.editById }
         ]
       },
 
@@ -110,11 +105,9 @@ const sidebarConfig = [
         path: PATH_DASHBOARD.eCommerce.root,
         icon: ICONS.products,
         children: [
-       
           { title: 'view', path: PATH_DASHBOARD.eCommerce.list },
           { title: 'create', path: PATH_DASHBOARD.eCommerce.newProduct },
-          { title: 'edit', path: PATH_DASHBOARD.eCommerce.editById },
-          
+          { title: 'edit', path: PATH_DASHBOARD.eCommerce.editById }
         ]
       },
 
@@ -124,11 +117,9 @@ const sidebarConfig = [
         path: PATH_DASHBOARD.eCommerce.root,
         icon: ICONS.categories,
         children: [
-       
           { title: 'view', path: PATH_DASHBOARD.eCommerce.list },
           { title: 'create', path: PATH_DASHBOARD.eCommerce.newProduct },
-          { title: 'edit', path: PATH_DASHBOARD.eCommerce.editById },
-          
+          { title: 'edit', path: PATH_DASHBOARD.eCommerce.editById }
         ]
       },
 
@@ -138,34 +129,29 @@ const sidebarConfig = [
         path: PATH_DASHBOARD.eCommerce.root,
         icon: ICONS.promocodes,
         children: [
-       
           { title: 'view', path: PATH_DASHBOARD.eCommerce.list },
           { title: 'create', path: PATH_DASHBOARD.eCommerce.newProduct },
-          { title: 'edit', path: PATH_DASHBOARD.eCommerce.editById },
-          
+          { title: 'edit', path: PATH_DASHBOARD.eCommerce.editById }
         ]
       },
 
-       // MANAGEMENT : Staff
-       {
+      // MANAGEMENT : Staff
+      {
         title: 'staffs',
         path: PATH_DASHBOARD.eCommerce.root,
         icon: ICONS.staffs,
         children: [
-       
           { title: 'view', path: PATH_DASHBOARD.eCommerce.list },
           { title: 'create', path: PATH_DASHBOARD.eCommerce.newProduct },
-          { title: 'edit', path: PATH_DASHBOARD.eCommerce.editById },
-          
+          { title: 'edit', path: PATH_DASHBOARD.eCommerce.editById }
         ]
       },
-      
-       // MANAGEMENT : Banners
-       {
+
+      // MANAGEMENT : Banners
+      {
         title: 'banners',
-        path: PATH_DASHBOARD.eCommerce.list,
-        icon: ICONS.banners,
-        
+        path: PATH_DASHBOARD.general.banner,
+        icon: ICONS.banners
       },
 
       // MANAGEMENT : Flavours
@@ -174,11 +160,9 @@ const sidebarConfig = [
         path: PATH_DASHBOARD.eCommerce.root,
         icon: ICONS.flavours,
         children: [
-       
           { title: 'view', path: PATH_DASHBOARD.eCommerce.list },
           { title: 'create', path: PATH_DASHBOARD.eCommerce.newProduct },
-          { title: 'edit', path: PATH_DASHBOARD.eCommerce.editById },
-          
+          { title: 'edit', path: PATH_DASHBOARD.eCommerce.editById }
         ]
       },
 
@@ -188,29 +172,27 @@ const sidebarConfig = [
         path: PATH_DASHBOARD.eCommerce.root,
         icon: ICONS.customers,
         children: [
-       
           { title: 'view', path: PATH_DASHBOARD.eCommerce.list },
           { title: 'create', path: PATH_DASHBOARD.eCommerce.newProduct },
-          { title: 'edit', path: PATH_DASHBOARD.eCommerce.editById },
-          
+          { title: 'edit', path: PATH_DASHBOARD.eCommerce.editById }
         ]
-      },
+      }
 
       // { title: 'flavours', path: PATH_DASHBOARD.eCommerce.list },
-          // { title: 'shop', path: PATH_DASHBOARD.eCommerce.shop },
-          // { title: 'customers', path: PATH_DASHBOARD.eCommerce.list },
-          // { title: 'banners', path: PATH_DASHBOARD.eCommerce.list },
-          // { title: 'categories', path: PATH_DASHBOARD.eCommerce.list },
-          // { title: 'promocodes', path: PATH_DASHBOARD.eCommerce.list },
-          // { title: 'staffs', path: PATH_DASHBOARD.user.cards },
-          // { title: 'product', path: PATH_DASHBOARD.eCommerce.productById },
+      // { title: 'shop', path: PATH_DASHBOARD.eCommerce.shop },
+      // { title: 'customers', path: PATH_DASHBOARD.eCommerce.list },
+      // { title: 'banners', path: PATH_DASHBOARD.eCommerce.list },
+      // { title: 'categories', path: PATH_DASHBOARD.eCommerce.list },
+      // { title: 'promocodes', path: PATH_DASHBOARD.eCommerce.list },
+      // { title: 'staffs', path: PATH_DASHBOARD.user.cards },
+      // { title: 'product', path: PATH_DASHBOARD.eCommerce.productById },
 
-          // { title: 'list', path: PATH_DASHBOARD.eCommerce.list },
-          // { title: 'create', path: PATH_DASHBOARD.eCommerce.newProduct },
-          // { title: 'edit', path: PATH_DASHBOARD.eCommerce.editById },
-          // { title: 'checkout', path: PATH_DASHBOARD.eCommerce.checkout },
-          // { title: 'invoice', path: PATH_DASHBOARD.eCommerce.invoice }
-      
+      // { title: 'list', path: PATH_DASHBOARD.eCommerce.list },
+      // { title: 'create', path: PATH_DASHBOARD.eCommerce.newProduct },
+      // { title: 'edit', path: PATH_DASHBOARD.eCommerce.editById },
+      // { title: 'checkout', path: PATH_DASHBOARD.eCommerce.checkout },
+      // { title: 'invoice', path: PATH_DASHBOARD.eCommerce.invoice }
+
       // MANAGEMENT : BLOG
       // {
       //   title: 'blog',
@@ -237,7 +219,7 @@ const sidebarConfig = [
       //   info: <Label color="error">2</Label>
       // },
       // { title: 'chat', path: PATH_DASHBOARD.chat.root, icon: ICONS.chat },
-      { title: 'calendar', path: PATH_DASHBOARD.calendar, icon: ICONS.calendar },
+      { title: 'calendar', path: PATH_DASHBOARD.calendar, icon: ICONS.calendar }
       // {
       //   title: 'kanban',
       //   path: PATH_DASHBOARD.kanban,
