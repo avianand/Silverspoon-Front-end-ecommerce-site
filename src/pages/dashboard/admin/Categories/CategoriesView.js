@@ -13,11 +13,11 @@ import useSettings from '../../../../hooks/useSettings';
 // components
 import Page from '../../../../components/Page';
 import HeaderBreadcrumbs from '../../../../components/HeaderBreadcrumbs';
-import ProductNewForm from '../../../../components/_dashboard/admin/order/CustomOrderForm';
+import ProductNewForm from '../../../../components/_dashboard/admin/order/OrderForm';
 
 // ----------------------------------------------------------------------
 
-export default function CustomOrderEdit() {
+export default function CategoriesView() {
   const { themeStretch } = useSettings();
   const dispatch = useDispatch();
   const { pathname } = useLocation();
@@ -31,17 +31,17 @@ export default function CustomOrderEdit() {
   }, [dispatch]);
 
   return (
-    <Page title="Admin : View Custom Order | SSB">
+    <Page title="Admin : Categories | SSB">
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
-          heading="View Custom Order"
+          heading="Categories"
           links={[
             { name: 'Dashboard', href: PATH_DASHBOARD.root },
             {
-              name: 'E-Commerce',
-              href: PATH_DASHBOARD.eCommerce.root
-            }
-            // { name: !isEdit ? 'New custom order' : name }
+              name: 'Categories',
+              href: PATH_DASHBOARD.categories.root
+            },
+            { name: !isEdit ? 'New product' : name }
           ]}
         />
 

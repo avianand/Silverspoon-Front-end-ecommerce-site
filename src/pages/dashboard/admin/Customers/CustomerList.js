@@ -42,18 +42,17 @@ import {
   ProductMoreMenu
 } from '../../../../components/_dashboard/e-commerce/product-list';
 import { IMAGE_CDN_URL } from '../../../../_apis_/urls';
-import { getOrders } from '../../../../redux/slices/admin/orders';
+import { getCustomers } from '../../../../redux/slices/admin/customer';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'orderNumber', label: 'Order', alignRight: false },
-  { id: 'status', label: 'Status', alignRight: false },
-  { id: 'paymentDetails', label: 'Payment Status', alignRight: false },
-  { id: 'deliveryDate', label: 'Deliver by', alignRight: false },
-  { id: 'createdAt', label: 'Ordered on', alignRight: false },
-  { id: 'amount', label: 'Amount', alignRight: false },
-  { id: 'payableAmount', label: 'Payable Amount', alignRight: false },
+  { id: 'name', label: 'Name', alignRight: false },
+  { id: 'email', label: 'Email', alignRight: false },
+  { id: 'mobile', label: 'Mobile', alignRight: false },
+  { id: 'createdAt', label: 'Created At', alignRight: false },
+  { id: 'isEmailVerified', label: 'Email Verified', alignRight: false },
+  { id: 'isMobileVerified', label: 'Mobile Verified', alignRight: false },
   { id: '' }
 ];
 
@@ -92,10 +91,7 @@ function applySortFilter(array, comparator, query) {
   });
 
   if (query) {
-    return filter(
-      array,
-      (_product) => _product.orderNumber.toString().toLowerCase().indexOf(query.toLowerCase()) !== -1
-    );
+    return filter(array, (_product) => _product.name.toLowerCase().indexOf(query.toLowerCase()) !== -1);
   }
 
   return stabilizedThis.map((el) => el[0]);
@@ -108,7 +104,7 @@ export default function OrderList() {
   const theme = useTheme();
   const dispatch = useDispatch();
   const { products } = useSelector((state) => state.product);
-  const { orders } = useSelector((state) => state.order);
+  const { customers } = useSelector((state) => state.customer);
   const [subCategories, setsubCategories] = useState([]);
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState('desc');
@@ -118,7 +114,7 @@ export default function OrderList() {
   const [orderBy, setOrderBy] = useState('createdAt');
 
   useEffect(() => {
-    dispatch(getOrders());
+    dispatch(getCustomers());
   }, [dispatch]);
 
   const handleRequestSort = (event, property) => {
@@ -168,22 +164,22 @@ export default function OrderList() {
     dispatch(deleteProduct(productId));
   };
 
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - orders.length) : 0;
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - customers.length) : 0;
 
-  const filteredProducts = applySortFilter(orders, getComparator(order, orderBy), filterName);
+  const filteredProducts = applySortFilter(customers, getComparator(order, orderBy), filterName);
   console.log({ filteredProducts });
   const isProductNotFound = filteredProducts.length === 0;
 
   return (
-    <Page title="Admin: Order List | SSB">
+    <Page title="Admin: Customers List | SSB">
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
-          heading="Order List"
+          heading="Customers List"
           links={[
             { name: 'Dashboard', href: PATH_DASHBOARD.root },
             {
               name: 'order',
-              href: PATH_DASHBOARD.order.list
+              href: PATH_DASHBOARD.customer.list
             },
             { name: 'Order List' }
           ]}
@@ -203,7 +199,7 @@ export default function OrderList() {
           <ProductListToolbar
             numSelected={selected.length}
             filterName={filterName}
-            searchTerm="Search order..."
+            searchTerm="Search customer..."
             onFilterName={handleFilterByName}
           />
 
@@ -214,7 +210,7 @@ export default function OrderList() {
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
-                  rowCount={orders.length}
+                  rowCount={customers.length}
                   numSelected={selected.length}
                   onRequestSort={handleRequestSort}
                   onSelectAllClick={handleSelectAllClick}
@@ -225,12 +221,13 @@ export default function OrderList() {
                       _id,
                       orderNumber,
                       name,
-                      payableAmount,
+                      isEmailVerified,
+                      isMobileVerified,
                       amount,
                       createdAt,
                       status,
-                      deliveryDate,
-                      paymentDetails
+                      email,
+                      mobile
                     } = row;
 
                     const isItemSelected = selected.indexOf(name) !== -1;
@@ -262,39 +259,29 @@ export default function OrderList() {
                           </Box>
                         </TableCell> */}
 
-                        <TableCell style={{ minWidth: 120 }}>{orderNumber.toString()}</TableCell>
-                        <TableCell style={{ minWidth: 120 }}>
-                          <Label
-                            variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}
-                            color={
-                              (status === 'accepted' && 'success') || (status === 'placed' && 'warning') || 'error'
-                            }
-                          >
-                            {status === 'placed' ? 'Placed' : status}
-                          </Label>
-                        </TableCell>
-                        <TableCell style={{ minWidth: 120 }}>
-                          <Label
-                            variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}
-                            color={
-                              (paymentDetails?.status === 'captured' && 'success') ||
-                              (paymentDetails?.status === 'placed' && 'warning') ||
-                              'error'
-                            }
-                          >
-                            {paymentDetails?.status === 'captured' ? 'Paid' : status}
-                          </Label>
-                        </TableCell>
-                        <TableCell style={{ minWidth: 140 }}>{fDate(deliveryDate)}</TableCell>
-                        <TableCell style={{ minWidth: 140 }}>{fDate(createdAt)}</TableCell>
-                        <TableCell style={{ minWidth: 140 }}>{fCurrency(amount)}</TableCell>
-                        <TableCell style={{ minWidth: 140 }}>{fCurrency(payableAmount)}</TableCell>
+                        <TableCell style={{ minWidth: 160 }}>{name}</TableCell>
+                        <TableCell style={{ minWidth: 160 }}>{email}</TableCell>
+                        <TableCell style={{ minWidth: 160 }}>+91-{mobile}</TableCell>
 
+                        <TableCell style={{ minWidth: 150 }}>{fDate(createdAt)}</TableCell>
+                        <TableCell style={{ minWidth: 120 }}>
+                          <Label
+                            variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}
+                            color={(isEmailVerified && 'success') || 'error'}
+                          >
+                            {isEmailVerified ? 'Yes' : 'No'}
+                          </Label>
+                        </TableCell>
+                        <TableCell style={{ minWidth: 120 }}>
+                          <Label
+                            variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}
+                            color={(isMobileVerified && 'success') || 'error'}
+                          >
+                            {isMobileVerified ? 'Yes' : 'No'}
+                          </Label>
+                        </TableCell>
                         <TableCell align="right">
-                          <ProductMoreMenu
-                            onDelete={() => handleDeleteProduct(_id)}
-                            productName={orderNumber.toString()}
-                          />
+                          <ProductMoreMenu onDelete={() => handleDeleteProduct(_id)} productName={name} />
                         </TableCell>
                       </TableRow>
                     );
@@ -323,7 +310,7 @@ export default function OrderList() {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={orders.length}
+            count={customers.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

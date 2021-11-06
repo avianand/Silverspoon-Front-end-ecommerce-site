@@ -21,35 +21,37 @@ import {
   TablePagination
 } from '@material-ui/core';
 // redux
-import { useDispatch, useSelector } from '../../redux/store';
-import { getProducts, deleteProduct } from '../../redux/slices/product';
+import { useDispatch, useSelector } from '../../../../redux/store';
+import { getProducts, deleteProduct } from '../../../../redux/slices/product';
 // utils
-import { fDate } from '../../utils/formatTime';
-import { fCurrency } from '../../utils/formatNumber';
+import { fDate } from '../../../../utils/formatTime';
+import { fCurrency } from '../../../../utils/formatNumber';
 // routes
-import { PATH_DASHBOARD } from '../../routes/paths';
+import { PATH_DASHBOARD } from '../../../../routes/paths';
 // hooks
-import useSettings from '../../hooks/useSettings';
+import useSettings from '../../../../hooks/useSettings';
 // components
-import Page from '../../components/Page';
-import Label from '../../components/Label';
-import Scrollbar from '../../components/Scrollbar';
-import SearchNotFound from '../../components/SearchNotFound';
-import HeaderBreadcrumbs from '../../components/HeaderBreadcrumbs';
+import Page from '../../../../components/Page';
+import Label from '../../../../components/Label';
+import Scrollbar from '../../../../components/Scrollbar';
+import SearchNotFound from '../../../../components/SearchNotFound';
+import HeaderBreadcrumbs from '../../../../components/HeaderBreadcrumbs';
 import {
   ProductListHead,
   ProductListToolbar,
   ProductMoreMenu
-} from '../../components/_dashboard/e-commerce/product-list';
-import { IMAGE_CDN_URL } from '../../_apis_/urls';
+} from '../../../../components/_dashboard/e-commerce/product-list';
+import { IMAGE_CDN_URL } from '../../../../_apis_/urls';
+import customorders, { getCustomOrders } from '../../../../redux/slices/admin/customorders';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'name', label: 'Product', alignRight: false },
-  { id: 'createdAt', label: 'Created at', alignRight: false },
-  { id: 'parentSubcategoryId', label: 'Subcategory', alignRight: false },
-  { id: 'isEnabled', label: 'Status', alignRight: false },
+  { id: 'customOrderNumber', label: 'Custom Order #', alignRight: false },
+  { id: 'status', label: 'Status', alignRight: false },
+  { id: 'customerName', label: 'Customer Name', alignRight: false },
+  { id: 'orderNumber', label: 'Order #', alignRight: false },
+  { id: 'expectedDeliveryDate', label: 'Deliver by', alignRight: false },
   { id: 'price', label: 'Price', alignRight: true },
   { id: '' }
 ];
@@ -89,7 +91,10 @@ function applySortFilter(array, comparator, query) {
   });
 
   if (query) {
-    return filter(array, (_product) => _product.name.toLowerCase().indexOf(query.toLowerCase()) !== -1);
+    return filter(
+      array,
+      (_product) => _product.orderNumber.toString().toLowerCase().indexOf(query.toLowerCase()) !== -1
+    );
   }
 
   return stabilizedThis.map((el) => el[0]);
@@ -97,11 +102,12 @@ function applySortFilter(array, comparator, query) {
 
 // ----------------------------------------------------------------------
 
-export default function EcommerceProductList() {
+export default function CustomOrderList() {
   const { themeStretch } = useSettings();
   const theme = useTheme();
   const dispatch = useDispatch();
   const { products } = useSelector((state) => state.product);
+  const { customOrders } = useSelector((state) => state.customOrder);
   const [subCategories, setsubCategories] = useState([]);
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState('asc');
@@ -111,7 +117,7 @@ export default function EcommerceProductList() {
   const [orderBy, setOrderBy] = useState('createdAt');
 
   useEffect(() => {
-    dispatch(getProducts());
+    dispatch(getCustomOrders());
   }, [dispatch]);
 
   const handleRequestSort = (event, property) => {
@@ -122,7 +128,7 @@ export default function EcommerceProductList() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = products.map((n) => n.name);
+      const newSelecteds = customOrders.map((n) => n.name);
       setSelected(newSelecteds);
       return;
     }
@@ -161,39 +167,44 @@ export default function EcommerceProductList() {
     dispatch(deleteProduct(productId));
   };
 
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - products.length) : 0;
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - customOrders.length) : 0;
 
-  const filteredProducts = applySortFilter(products, getComparator(order, orderBy), filterName);
+  const filteredProducts = applySortFilter(customOrders, getComparator(order, orderBy), filterName);
   console.log({ filteredProducts });
   const isProductNotFound = filteredProducts.length === 0;
 
   return (
-    <Page title="Ecommerce: Product List | Minimal-UI">
+    <Page title="Ecommerce: Custom Orders List ">
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
-          heading="Product List"
+          heading="Custom Orders List"
           links={[
             { name: 'Dashboard', href: PATH_DASHBOARD.root },
             {
               name: 'E-Commerce',
               href: PATH_DASHBOARD.eCommerce.root
             },
-            { name: 'Product List' }
+            { name: 'Custom Orders' }
           ]}
-          action={
-            <Button
-              variant="contained"
-              component={RouterLink}
-              to={PATH_DASHBOARD.eCommerce.newProduct}
-              startIcon={<Icon icon={plusFill} />}
-            >
-              New Product
-            </Button>
-          }
+          // action={
+          //   <Button
+          //     variant="contained"
+          //     component={RouterLink}
+          //     to={PATH_DASHBOARD.eCommerce.newProduct}
+          //     startIcon={<Icon icon={plusFill} />}
+          //   >
+          //     New Product
+          //   </Button>
+          // }
         />
 
         <Card>
-          <ProductListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} />
+          <ProductListToolbar
+            numSelected={selected.length}
+            searchTerm="Search customorder..."
+            filterName={filterName}
+            onFilterName={handleFilterByName}
+          />
 
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
@@ -209,9 +220,18 @@ export default function EcommerceProductList() {
                 />
                 <TableBody>
                   {filteredProducts.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { id, name, images, price, createdAt, parentSubcategoryId, isEnabled } = row;
+                    const {
+                      id,
+                      orderNumber,
+                      customOrderNumber,
+                      status,
+                      price,
+                      expectedDeliveryDate,
+                      createdAt,
+                      customerName
+                    } = row;
 
-                    const isItemSelected = selected.indexOf(name) !== -1;
+                    const isItemSelected = selected.indexOf(customOrderNumber) !== -1;
 
                     return (
                       <TableRow
@@ -223,40 +243,35 @@ export default function EcommerceProductList() {
                         aria-checked={isItemSelected}
                       >
                         <TableCell padding="checkbox">
-                          <Checkbox checked={isItemSelected} onChange={(event) => handleClick(event, name)} />
-                        </TableCell>
-                        <TableCell component="th" scope="row" padding="none">
-                          <Box
-                            sx={{
-                              py: 2,
-                              display: 'flex',
-                              alignItems: 'center'
-                            }}
-                          >
-                            <ThumbImgStyle alt={name} src={`${IMAGE_CDN_URL}${images[0]}`} />
-                            <Typography variant="subtitle2" noWrap>
-                              {name}
-                            </Typography>
-                          </Box>
+                          <Checkbox
+                            checked={isItemSelected}
+                            onChange={(event) => handleClick(event, customOrderNumber)}
+                          />
                         </TableCell>
 
-                        <TableCell style={{ minWidth: 160 }}>{fDate(createdAt)}</TableCell>
-                        <TableCell style={{ minWidth: 160 }}>{parentSubcategoryId}</TableCell>
-
-                        <TableCell style={{ minWidth: 160 }}>
+                        <TableCell style={{ minWidth: 160 }}>{customOrderNumber}</TableCell>
+                        <TableCell style={{ minWidth: 120 }}>
                           <Label
                             variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}
-                            color={isEnabled ? 'success' : 'error'}
+                            color={
+                              (status === 'accepted' && 'success') || (status === 'placed' && 'warning') || 'error'
+                            }
                           >
-                            {/* {sentenceCase(inventoryType)} */}
-                            {isEnabled ? 'In Stock' : 'Out of Stock'}
+                            {status === 'placed' ? 'Placed' : status}
                           </Label>
                         </TableCell>
+                        <TableCell style={{ minWidth: 160 }}>{customerName}</TableCell>
+                        <TableCell style={{ minWidth: 160 }}>{orderNumber || 'NA'}</TableCell>
+                        <TableCell style={{ minWidth: 160 }}>{fDate(createdAt)}</TableCell>
+                        <TableCell style={{ minWidth: 160 }}>{fDate(expectedDeliveryDate)}</TableCell>
 
-                        <TableCell align="right">₹ {fCurrency(price)}</TableCell>
+                        <TableCell align="right">{fCurrency(price)}</TableCell>
 
                         <TableCell align="right">
-                          <ProductMoreMenu onDelete={() => handleDeleteProduct(id)} productName={name} />
+                          <ProductMoreMenu
+                            onDelete={() => handleDeleteProduct(id)}
+                            productName={orderNumber?.toString() || customOrderNumber.toString()}
+                          />
                         </TableCell>
                       </TableRow>
                     );
@@ -285,7 +300,7 @@ export default function EcommerceProductList() {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={products.length}
+            count={customOrders.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

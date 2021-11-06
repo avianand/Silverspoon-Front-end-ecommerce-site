@@ -41,19 +41,17 @@ import {
   ProductListToolbar,
   ProductMoreMenu
 } from '../../../../components/_dashboard/e-commerce/product-list';
+import { getCategories } from '../../../../redux/slices/admin/categories';
 import { IMAGE_CDN_URL } from '../../../../_apis_/urls';
-import { getOrders } from '../../../../redux/slices/admin/orders';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'orderNumber', label: 'Order', alignRight: false },
-  { id: 'status', label: 'Status', alignRight: false },
-  { id: 'paymentDetails', label: 'Payment Status', alignRight: false },
-  { id: 'deliveryDate', label: 'Deliver by', alignRight: false },
-  { id: 'createdAt', label: 'Ordered on', alignRight: false },
-  { id: 'amount', label: 'Amount', alignRight: false },
-  { id: 'payableAmount', label: 'Payable Amount', alignRight: false },
+  { id: 'name', label: 'Category Name', alignRight: false },
+  { id: 'updatedAt', label: 'Updated At', alignRight: false },
+  { id: 'createdAt', label: 'Created At', alignRight: false },
+  { id: 'isEnabled', label: 'Enabled', alignRight: false },
+  { id: 'subcategories', label: 'Subcategories', alignRight: false },
   { id: '' }
 ];
 
@@ -92,10 +90,7 @@ function applySortFilter(array, comparator, query) {
   });
 
   if (query) {
-    return filter(
-      array,
-      (_product) => _product.orderNumber.toString().toLowerCase().indexOf(query.toLowerCase()) !== -1
-    );
+    return filter(array, (_product) => _product.name.toLowerCase().indexOf(query.toLowerCase()) !== -1);
   }
 
   return stabilizedThis.map((el) => el[0]);
@@ -103,12 +98,12 @@ function applySortFilter(array, comparator, query) {
 
 // ----------------------------------------------------------------------
 
-export default function OrderList() {
+export default function CategoriesList() {
   const { themeStretch } = useSettings();
   const theme = useTheme();
   const dispatch = useDispatch();
   const { products } = useSelector((state) => state.product);
-  const { orders } = useSelector((state) => state.order);
+  const { categories } = useSelector((state) => state.categories);
   const [subCategories, setsubCategories] = useState([]);
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState('desc');
@@ -118,7 +113,7 @@ export default function OrderList() {
   const [orderBy, setOrderBy] = useState('createdAt');
 
   useEffect(() => {
-    dispatch(getOrders());
+    dispatch(getCategories());
   }, [dispatch]);
 
   const handleRequestSort = (event, property) => {
@@ -168,42 +163,42 @@ export default function OrderList() {
     dispatch(deleteProduct(productId));
   };
 
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - orders.length) : 0;
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - products.length) : 0;
 
-  const filteredProducts = applySortFilter(orders, getComparator(order, orderBy), filterName);
+  const filteredProducts = applySortFilter(categories, getComparator(order, orderBy), filterName);
   console.log({ filteredProducts });
   const isProductNotFound = filteredProducts.length === 0;
 
   return (
-    <Page title="Admin: Order List | SSB">
+    <Page title="Admin: Categories List | SSB">
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
-          heading="Order List"
+          heading="Categories List"
           links={[
             { name: 'Dashboard', href: PATH_DASHBOARD.root },
             {
-              name: 'order',
-              href: PATH_DASHBOARD.order.list
+              name: 'Categories',
+              href: PATH_DASHBOARD.categories.list
             },
-            { name: 'Order List' }
+            { name: 'Categories List' }
           ]}
-          // action={
-          //   <Button
-          //     variant="contained"
-          //     component={RouterLink}
-          //     to={PATH_DASHBOARD.eCommerce.newProduct}
-          //     startIcon={<Icon icon={plusFill} />}
-          //   >
-          //     New Product
-          //   </Button>
-          // }
+          action={
+            <Button
+              variant="contained"
+              component={RouterLink}
+              to={PATH_DASHBOARD.eCommerce.newProduct}
+              startIcon={<Icon icon={plusFill} />}
+            >
+              New Product
+            </Button>
+          }
         />
 
         <Card>
           <ProductListToolbar
             numSelected={selected.length}
             filterName={filterName}
-            searchTerm="Search order..."
+            searchTerm="Search category..."
             onFilterName={handleFilterByName}
           />
 
@@ -214,24 +209,14 @@ export default function OrderList() {
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
-                  rowCount={orders.length}
+                  rowCount={categories.length}
                   numSelected={selected.length}
                   onRequestSort={handleRequestSort}
                   onSelectAllClick={handleSelectAllClick}
                 />
                 <TableBody>
                   {filteredProducts.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const {
-                      _id,
-                      orderNumber,
-                      name,
-                      payableAmount,
-                      amount,
-                      createdAt,
-                      status,
-                      deliveryDate,
-                      paymentDetails
-                    } = row;
+                    const { _id, isEnabled, name, image, createdAt, updatedAt, subcategories } = row;
 
                     const isItemSelected = selected.indexOf(name) !== -1;
 
@@ -247,7 +232,7 @@ export default function OrderList() {
                         <TableCell padding="checkbox">
                           <Checkbox checked={isItemSelected} onChange={(event) => handleClick(event, name)} />
                         </TableCell>
-                        {/* <TableCell component="th" scope="row" padding="none">
+                        <TableCell component="th" scope="row" padding="none">
                           <Box
                             sx={{
                               py: 2,
@@ -255,46 +240,33 @@ export default function OrderList() {
                               alignItems: 'center'
                             }}
                           >
-                            <ThumbImgStyle alt={name} src={`${IMAGE_CDN_URL}${images[0]}`} />
-                            <Typography variant="subtitle2" noWrap>
+                            <ThumbImgStyle alt={name} src={`${IMAGE_CDN_URL}${image}`} />
+                            <Typography variant="subtitle2" Wrap>
                               {name}
                             </Typography>
                           </Box>
-                        </TableCell> */}
+                        </TableCell>
 
-                        <TableCell style={{ minWidth: 120 }}>{orderNumber.toString()}</TableCell>
+                        <TableCell style={{ minWidth: 160 }}>{fDate(updatedAt)}</TableCell>
+                        <TableCell style={{ minWidth: 160 }}>{fDate(createdAt)}</TableCell>
                         <TableCell style={{ minWidth: 120 }}>
                           <Label
                             variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}
-                            color={
-                              (status === 'accepted' && 'success') || (status === 'placed' && 'warning') || 'error'
-                            }
+                            color={(isEnabled && 'success') || 'error'}
                           >
-                            {status === 'placed' ? 'Placed' : status}
+                            {isEnabled ? 'Yes' : 'No'}
                           </Label>
                         </TableCell>
-                        <TableCell style={{ minWidth: 120 }}>
-                          <Label
-                            variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}
-                            color={
-                              (paymentDetails?.status === 'captured' && 'success') ||
-                              (paymentDetails?.status === 'placed' && 'warning') ||
-                              'error'
-                            }
-                          >
-                            {paymentDetails?.status === 'captured' ? 'Paid' : status}
-                          </Label>
+                        <TableCell style={{ minWidth: 160 }}>
+                          {subcategories.map((subc) => (
+                            <>
+                              {subc.name} <br />
+                            </>
+                          ))}
                         </TableCell>
-                        <TableCell style={{ minWidth: 140 }}>{fDate(deliveryDate)}</TableCell>
-                        <TableCell style={{ minWidth: 140 }}>{fDate(createdAt)}</TableCell>
-                        <TableCell style={{ minWidth: 140 }}>{fCurrency(amount)}</TableCell>
-                        <TableCell style={{ minWidth: 140 }}>{fCurrency(payableAmount)}</TableCell>
 
                         <TableCell align="right">
-                          <ProductMoreMenu
-                            onDelete={() => handleDeleteProduct(_id)}
-                            productName={orderNumber.toString()}
-                          />
+                          <ProductMoreMenu onDelete={() => handleDeleteProduct(_id)} productName={name} />
                         </TableCell>
                       </TableRow>
                     );
@@ -323,7 +295,7 @@ export default function OrderList() {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={orders.length}
+            count={categories.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

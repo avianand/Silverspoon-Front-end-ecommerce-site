@@ -37,7 +37,12 @@ ProductListToolbar.propTypes = {
   onFilterName: PropTypes.func
 };
 
-export default function ProductListToolbar({ numSelected, filterName, onFilterName }) {
+export default function ProductListToolbar({
+  numSelected,
+  filterName,
+  onFilterName,
+  searchTerm = 'Search product...'
+}) {
   const theme = useTheme();
   const isLight = theme.palette.mode === 'light';
 
@@ -58,7 +63,7 @@ export default function ProductListToolbar({ numSelected, filterName, onFilterNa
         <SearchStyle
           value={filterName}
           onChange={onFilterName}
-          placeholder="Search product..."
+          placeholder={searchTerm}
           startAdornment={
             <InputAdornment position="start">
               <Box component={Icon} icon={searchFill} sx={{ color: 'text.disabled' }} />

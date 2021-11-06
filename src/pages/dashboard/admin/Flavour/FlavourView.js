@@ -5,7 +5,6 @@ import { useParams, useLocation } from 'react-router-dom';
 import { Container } from '@material-ui/core';
 // redux
 import { useDispatch, useSelector } from '../../../../redux/store';
-import { getProducts } from '../../../../redux/slices/product';
 // routes
 import { PATH_DASHBOARD } from '../../../../routes/paths';
 // hooks
@@ -13,35 +12,36 @@ import useSettings from '../../../../hooks/useSettings';
 // components
 import Page from '../../../../components/Page';
 import HeaderBreadcrumbs from '../../../../components/HeaderBreadcrumbs';
-import ProductNewForm from '../../../../components/_dashboard/admin/order/CustomOrderForm';
+import ProductNewForm from '../../../../components/_dashboard/admin/order/OrderForm';
+import { getFlavour } from '../../../../redux/slices/admin/flavours';
 
 // ----------------------------------------------------------------------
 
-export default function CustomOrderEdit() {
+export default function FlavourView() {
   const { themeStretch } = useSettings();
   const dispatch = useDispatch();
   const { pathname } = useLocation();
   const { name } = useParams();
-  const { products } = useSelector((state) => state.product);
+  const { flavours } = useSelector((state) => state.flavour);
   const isEdit = pathname.includes('edit');
-  const currentProduct = products.find((product) => paramCase(product.name) === name);
+  const currentProduct = flavours.find((product) => paramCase(product.name) === name);
 
   useEffect(() => {
-    dispatch(getProducts());
+    dispatch(getFlavour());
   }, [dispatch]);
 
   return (
-    <Page title="Admin : View Custom Order | SSB">
+    <Page title="Admin : View Order | SSB">
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
-          heading="View Custom Order"
+          heading="View Order"
           links={[
             { name: 'Dashboard', href: PATH_DASHBOARD.root },
             {
               name: 'E-Commerce',
               href: PATH_DASHBOARD.eCommerce.root
-            }
-            // { name: !isEdit ? 'New custom order' : name }
+            },
+            { name: !isEdit ? 'New product' : name }
           ]}
         />
 

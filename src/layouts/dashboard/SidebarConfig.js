@@ -77,7 +77,7 @@ const sidebarConfig = [
       // MANAGEMENT : Orders
       {
         title: 'orders',
-        path: PATH_DASHBOARD.eCommerce.root,
+        path: PATH_DASHBOARD.order.root,
         icon: ICONS.cart,
         info: <Label color="error">2</Label>,
         children: [
@@ -89,13 +89,13 @@ const sidebarConfig = [
       // MANAGEMENT : Custom orders
       {
         title: 'custom orders',
-        path: PATH_DASHBOARD.eCommerce.root,
+        path: PATH_DASHBOARD.customorder.root,
         icon: ICONS.customorders,
         info: <Label color="error">2</Label>,
         children: [
-          { title: 'view', path: PATH_DASHBOARD.eCommerce.list },
-          { title: 'create', path: PATH_DASHBOARD.eCommerce.newProduct },
-          { title: 'edit', path: PATH_DASHBOARD.eCommerce.editById }
+          { title: 'view', path: PATH_DASHBOARD.customorder.list },
+          // { title: 'create', path: PATH_DASHBOARD.eCommerce.newProduct },
+          { title: 'edit', path: PATH_DASHBOARD.customorder.edit }
         ]
       },
 
@@ -114,36 +114,37 @@ const sidebarConfig = [
       // MANAGEMENT : Categories
       {
         title: 'categories',
-        path: PATH_DASHBOARD.eCommerce.root,
+        path: PATH_DASHBOARD.categories.root,
         icon: ICONS.categories,
         children: [
-          { title: 'view', path: PATH_DASHBOARD.eCommerce.list },
-          { title: 'create', path: PATH_DASHBOARD.eCommerce.newProduct },
-          { title: 'edit', path: PATH_DASHBOARD.eCommerce.editById }
+          { title: 'list', path: PATH_DASHBOARD.categories.list },
+          { title: 'subcategories', path: PATH_DASHBOARD.subcategories.list },
+          { title: 'create', path: PATH_DASHBOARD.categories.create },
+          { title: 'edit', path: PATH_DASHBOARD.categories.edit }
         ]
       },
 
       // MANAGEMENT : Promo Codes
       {
         title: 'promocodes',
-        path: PATH_DASHBOARD.eCommerce.root,
+        path: PATH_DASHBOARD.promocode.root,
         icon: ICONS.promocodes,
         children: [
-          { title: 'view', path: PATH_DASHBOARD.eCommerce.list },
-          { title: 'create', path: PATH_DASHBOARD.eCommerce.newProduct },
-          { title: 'edit', path: PATH_DASHBOARD.eCommerce.editById }
+          { title: 'list', path: PATH_DASHBOARD.promocode.list },
+          { title: 'create', path: PATH_DASHBOARD.promocode.create },
+          { title: 'edit', path: PATH_DASHBOARD.promocode.edit }
         ]
       },
 
       // MANAGEMENT : Staff
       {
         title: 'staffs',
-        path: PATH_DASHBOARD.eCommerce.root,
+        path: PATH_DASHBOARD.staff.root,
         icon: ICONS.staffs,
         children: [
-          { title: 'view', path: PATH_DASHBOARD.eCommerce.list },
-          { title: 'create', path: PATH_DASHBOARD.eCommerce.newProduct },
-          { title: 'edit', path: PATH_DASHBOARD.eCommerce.editById }
+          { title: 'list', path: PATH_DASHBOARD.staff.list },
+          { title: 'create', path: PATH_DASHBOARD.staff.create },
+          { title: 'edit', path: PATH_DASHBOARD.staff.edit }
         ]
       },
 
@@ -157,25 +158,21 @@ const sidebarConfig = [
       // MANAGEMENT : Flavours
       {
         title: 'flavours',
-        path: PATH_DASHBOARD.eCommerce.root,
+        path: PATH_DASHBOARD.flavour.root,
         icon: ICONS.flavours,
         children: [
-          { title: 'view', path: PATH_DASHBOARD.eCommerce.list },
-          { title: 'create', path: PATH_DASHBOARD.eCommerce.newProduct },
-          { title: 'edit', path: PATH_DASHBOARD.eCommerce.editById }
+          { title: 'list', path: PATH_DASHBOARD.flavour.list },
+          { title: 'create', path: PATH_DASHBOARD.flavour.create },
+          { title: 'edit', path: PATH_DASHBOARD.flavour.edit }
         ]
       },
 
       // MANAGEMENT : Custom orders
       {
         title: 'customers',
-        path: PATH_DASHBOARD.eCommerce.root,
+        path: PATH_DASHBOARD.customer.root,
         icon: ICONS.customers,
-        children: [
-          { title: 'view', path: PATH_DASHBOARD.eCommerce.list },
-          { title: 'create', path: PATH_DASHBOARD.eCommerce.newProduct },
-          { title: 'edit', path: PATH_DASHBOARD.eCommerce.editById }
-        ]
+        children: [{ title: 'list', path: PATH_DASHBOARD.customer.list }]
       }
 
       // { title: 'flavours', path: PATH_DASHBOARD.eCommerce.list },

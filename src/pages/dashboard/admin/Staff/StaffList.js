@@ -3,7 +3,7 @@ import { Icon } from '@iconify/react';
 import { sentenceCase } from 'change-case';
 import { useState, useEffect } from 'react';
 import plusFill from '@iconify/icons-eva/plus-fill';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useLocation } from 'react-router-dom';
 // material
 import { useTheme, styled } from '@material-ui/core/styles';
 import {
@@ -41,19 +41,17 @@ import {
   ProductListToolbar,
   ProductMoreMenu
 } from '../../../../components/_dashboard/e-commerce/product-list';
-import { IMAGE_CDN_URL } from '../../../../_apis_/urls';
-import { getOrders } from '../../../../redux/slices/admin/orders';
+import { getStaffs } from '../../../../redux/slices/admin/staff';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'orderNumber', label: 'Order', alignRight: false },
-  { id: 'status', label: 'Status', alignRight: false },
-  { id: 'paymentDetails', label: 'Payment Status', alignRight: false },
-  { id: 'deliveryDate', label: 'Deliver by', alignRight: false },
-  { id: 'createdAt', label: 'Ordered on', alignRight: false },
-  { id: 'amount', label: 'Amount', alignRight: false },
-  { id: 'payableAmount', label: 'Payable Amount', alignRight: false },
+  { id: 'name', label: 'Name', alignRight: false },
+  { id: 'isAdmin', label: 'Role', alignRight: false },
+  { id: 'mobile', label: 'Phone Number', alignRight: false },
+  { id: 'email', label: 'Email', alignRight: false },
+  { id: 'isEmailDelivered', label: 'Email', alignRight: false },
+  { id: 'isDeleted', label: 'Deleted', alignRight: false },
   { id: '' }
 ];
 
@@ -92,10 +90,7 @@ function applySortFilter(array, comparator, query) {
   });
 
   if (query) {
-    return filter(
-      array,
-      (_product) => _product.orderNumber.toString().toLowerCase().indexOf(query.toLowerCase()) !== -1
-    );
+    return filter(array, (_product) => _product.name.toLowerCase().indexOf(query.toLowerCase()) !== -1);
   }
 
   return stabilizedThis.map((el) => el[0]);
@@ -108,17 +103,18 @@ export default function OrderList() {
   const theme = useTheme();
   const dispatch = useDispatch();
   const { products } = useSelector((state) => state.product);
-  const { orders } = useSelector((state) => state.order);
-  const [subCategories, setsubCategories] = useState([]);
+  const { staffs } = useSelector((state) => state.staff);
+  const [title, setTitle] = useState('Staff');
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState('desc');
   const [selected, setSelected] = useState([]);
   const [filterName, setFilterName] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [orderBy, setOrderBy] = useState('createdAt');
+  const { pathname } = useLocation();
 
   useEffect(() => {
-    dispatch(getOrders());
+    dispatch(getStaffs());
   }, [dispatch]);
 
   const handleRequestSort = (event, property) => {
@@ -168,42 +164,41 @@ export default function OrderList() {
     dispatch(deleteProduct(productId));
   };
 
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - orders.length) : 0;
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - staffs.length) : 0;
 
-  const filteredProducts = applySortFilter(orders, getComparator(order, orderBy), filterName);
-  console.log({ filteredProducts });
+  const filteredProducts = applySortFilter(staffs, getComparator(order, orderBy), filterName);
   const isProductNotFound = filteredProducts.length === 0;
 
   return (
-    <Page title="Admin: Order List | SSB">
+    <Page title={`Admin: ${title} | SSB`}>
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
-          heading="Order List"
+          heading={`${title} List`}
           links={[
             { name: 'Dashboard', href: PATH_DASHBOARD.root },
             {
-              name: 'order',
+              name: `${title}`,
               href: PATH_DASHBOARD.order.list
             },
-            { name: 'Order List' }
+            { name: `${title} List` }
           ]}
-          // action={
-          //   <Button
-          //     variant="contained"
-          //     component={RouterLink}
-          //     to={PATH_DASHBOARD.eCommerce.newProduct}
-          //     startIcon={<Icon icon={plusFill} />}
-          //   >
-          //     New Product
-          //   </Button>
-          // }
+          action={
+            <Button
+              variant="contained"
+              component={RouterLink}
+              to={PATH_DASHBOARD.staff.create}
+              startIcon={<Icon icon={plusFill} />}
+            >
+              Add Staff Member
+            </Button>
+          }
         />
 
         <Card>
           <ProductListToolbar
             numSelected={selected.length}
             filterName={filterName}
-            searchTerm="Search order..."
+            searchTerm="Search staff..."
             onFilterName={handleFilterByName}
           />
 
@@ -214,24 +209,14 @@ export default function OrderList() {
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
-                  rowCount={orders.length}
+                  rowCount={staffs.length}
                   numSelected={selected.length}
                   onRequestSort={handleRequestSort}
                   onSelectAllClick={handleSelectAllClick}
                 />
                 <TableBody>
                   {filteredProducts.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const {
-                      _id,
-                      orderNumber,
-                      name,
-                      payableAmount,
-                      amount,
-                      createdAt,
-                      status,
-                      deliveryDate,
-                      paymentDetails
-                    } = row;
+                    const { _id, mobile, name, email, isAdmin, isEmailDelivered, isDeleted } = row;
 
                     const isItemSelected = selected.indexOf(name) !== -1;
 
@@ -247,54 +232,37 @@ export default function OrderList() {
                         <TableCell padding="checkbox">
                           <Checkbox checked={isItemSelected} onChange={(event) => handleClick(event, name)} />
                         </TableCell>
-                        {/* <TableCell component="th" scope="row" padding="none">
-                          <Box
-                            sx={{
-                              py: 2,
-                              display: 'flex',
-                              alignItems: 'center'
-                            }}
-                          >
-                            <ThumbImgStyle alt={name} src={`${IMAGE_CDN_URL}${images[0]}`} />
-                            <Typography variant="subtitle2" noWrap>
-                              {name}
-                            </Typography>
-                          </Box>
-                        </TableCell> */}
 
-                        <TableCell style={{ minWidth: 120 }}>{orderNumber.toString()}</TableCell>
+                        <TableCell style={{ minWidth: 120 }}>{name}</TableCell>
+
                         <TableCell style={{ minWidth: 120 }}>
                           <Label
                             variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}
-                            color={
-                              (status === 'accepted' && 'success') || (status === 'placed' && 'warning') || 'error'
-                            }
+                            color={(isAdmin && 'success') || 'warning'}
                           >
-                            {status === 'placed' ? 'Placed' : status}
+                            {isAdmin ? 'Admin' : 'Staff'}
+                          </Label>
+                        </TableCell>
+                        <TableCell style={{ minWidth: 140 }}>{mobile}</TableCell>
+                        <TableCell style={{ minWidth: 140 }}>{email}</TableCell>
+                        <TableCell style={{ minWidth: 120 }}>
+                          <Label
+                            variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}
+                            color={(isEmailDelivered?.status && 'success') || 'warning'}
+                          >
+                            {isEmailDelivered?.status ? 'Delivered' : 'Not Delivered'}
                           </Label>
                         </TableCell>
                         <TableCell style={{ minWidth: 120 }}>
                           <Label
                             variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}
-                            color={
-                              (paymentDetails?.status === 'captured' && 'success') ||
-                              (paymentDetails?.status === 'placed' && 'warning') ||
-                              'error'
-                            }
+                            color={(isDeleted && 'error') || 'warning'}
                           >
-                            {paymentDetails?.status === 'captured' ? 'Paid' : status}
+                            {isDeleted ? 'Yes' : 'No'}
                           </Label>
                         </TableCell>
-                        <TableCell style={{ minWidth: 140 }}>{fDate(deliveryDate)}</TableCell>
-                        <TableCell style={{ minWidth: 140 }}>{fDate(createdAt)}</TableCell>
-                        <TableCell style={{ minWidth: 140 }}>{fCurrency(amount)}</TableCell>
-                        <TableCell style={{ minWidth: 140 }}>{fCurrency(payableAmount)}</TableCell>
-
                         <TableCell align="right">
-                          <ProductMoreMenu
-                            onDelete={() => handleDeleteProduct(_id)}
-                            productName={orderNumber.toString()}
-                          />
+                          <ProductMoreMenu onDelete={() => handleDeleteProduct(_id)} productName={name} />
                         </TableCell>
                       </TableRow>
                     );
@@ -323,7 +291,7 @@ export default function OrderList() {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={orders.length}
+            count={staffs.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

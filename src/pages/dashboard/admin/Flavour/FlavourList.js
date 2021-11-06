@@ -42,18 +42,14 @@ import {
   ProductMoreMenu
 } from '../../../../components/_dashboard/e-commerce/product-list';
 import { IMAGE_CDN_URL } from '../../../../_apis_/urls';
-import { getOrders } from '../../../../redux/slices/admin/orders';
+import { getFlavours } from '../../../../redux/slices/admin/flavours';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'orderNumber', label: 'Order', alignRight: false },
-  { id: 'status', label: 'Status', alignRight: false },
-  { id: 'paymentDetails', label: 'Payment Status', alignRight: false },
-  { id: 'deliveryDate', label: 'Deliver by', alignRight: false },
-  { id: 'createdAt', label: 'Ordered on', alignRight: false },
-  { id: 'amount', label: 'Amount', alignRight: false },
-  { id: 'payableAmount', label: 'Payable Amount', alignRight: false },
+  { id: 'name', label: 'Name', alignRight: false },
+  { id: 'price', label: 'Price', alignRight: false },
+  { id: '_id', label: 'Id', alignRight: false },
   { id: '' }
 ];
 
@@ -92,10 +88,7 @@ function applySortFilter(array, comparator, query) {
   });
 
   if (query) {
-    return filter(
-      array,
-      (_product) => _product.orderNumber.toString().toLowerCase().indexOf(query.toLowerCase()) !== -1
-    );
+    return filter(array, (_product) => _product.name.toLowerCase().indexOf(query.toLowerCase()) !== -1);
   }
 
   return stabilizedThis.map((el) => el[0]);
@@ -103,11 +96,11 @@ function applySortFilter(array, comparator, query) {
 
 // ----------------------------------------------------------------------
 
-export default function OrderList() {
+export default function FlavourList() {
   const { themeStretch } = useSettings();
   const theme = useTheme();
   const dispatch = useDispatch();
-  const { products } = useSelector((state) => state.product);
+  const { flavours } = useSelector((state) => state.flavour);
   const { orders } = useSelector((state) => state.order);
   const [subCategories, setsubCategories] = useState([]);
   const [page, setPage] = useState(0);
@@ -118,7 +111,7 @@ export default function OrderList() {
   const [orderBy, setOrderBy] = useState('createdAt');
 
   useEffect(() => {
-    dispatch(getOrders());
+    dispatch(getFlavours());
   }, [dispatch]);
 
   const handleRequestSort = (event, property) => {
@@ -129,7 +122,7 @@ export default function OrderList() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = products.map((n) => n.name);
+      const newSelecteds = flavours.map((n) => n.name);
       setSelected(newSelecteds);
       return;
     }
@@ -168,42 +161,42 @@ export default function OrderList() {
     dispatch(deleteProduct(productId));
   };
 
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - orders.length) : 0;
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - flavours.length) : 0;
 
-  const filteredProducts = applySortFilter(orders, getComparator(order, orderBy), filterName);
+  const filteredProducts = applySortFilter(flavours, getComparator(order, orderBy), filterName);
   console.log({ filteredProducts });
   const isProductNotFound = filteredProducts.length === 0;
 
   return (
-    <Page title="Admin: Order List | SSB">
+    <Page title="Admin: Flavour List | SSB">
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
-          heading="Order List"
+          heading="Flavour List"
           links={[
             { name: 'Dashboard', href: PATH_DASHBOARD.root },
             {
-              name: 'order',
+              name: 'flavours',
               href: PATH_DASHBOARD.order.list
             },
-            { name: 'Order List' }
+            { name: 'Flavour List' }
           ]}
-          // action={
-          //   <Button
-          //     variant="contained"
-          //     component={RouterLink}
-          //     to={PATH_DASHBOARD.eCommerce.newProduct}
-          //     startIcon={<Icon icon={plusFill} />}
-          //   >
-          //     New Product
-          //   </Button>
-          // }
+          action={
+            <Button
+              variant="contained"
+              component={RouterLink}
+              to={PATH_DASHBOARD.flavour.create}
+              startIcon={<Icon icon={plusFill} />}
+            >
+              New Flavour
+            </Button>
+          }
         />
 
         <Card>
           <ProductListToolbar
             numSelected={selected.length}
             filterName={filterName}
-            searchTerm="Search order..."
+            searchTerm="Search falvour..."
             onFilterName={handleFilterByName}
           />
 
@@ -214,24 +207,14 @@ export default function OrderList() {
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
-                  rowCount={orders.length}
+                  rowCount={flavours.length}
                   numSelected={selected.length}
                   onRequestSort={handleRequestSort}
                   onSelectAllClick={handleSelectAllClick}
                 />
                 <TableBody>
                   {filteredProducts.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const {
-                      _id,
-                      orderNumber,
-                      name,
-                      payableAmount,
-                      amount,
-                      createdAt,
-                      status,
-                      deliveryDate,
-                      paymentDetails
-                    } = row;
+                    const { _id, name, price } = row;
 
                     const isItemSelected = selected.indexOf(name) !== -1;
 
@@ -262,39 +245,11 @@ export default function OrderList() {
                           </Box>
                         </TableCell> */}
 
-                        <TableCell style={{ minWidth: 120 }}>{orderNumber.toString()}</TableCell>
-                        <TableCell style={{ minWidth: 120 }}>
-                          <Label
-                            variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}
-                            color={
-                              (status === 'accepted' && 'success') || (status === 'placed' && 'warning') || 'error'
-                            }
-                          >
-                            {status === 'placed' ? 'Placed' : status}
-                          </Label>
-                        </TableCell>
-                        <TableCell style={{ minWidth: 120 }}>
-                          <Label
-                            variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}
-                            color={
-                              (paymentDetails?.status === 'captured' && 'success') ||
-                              (paymentDetails?.status === 'placed' && 'warning') ||
-                              'error'
-                            }
-                          >
-                            {paymentDetails?.status === 'captured' ? 'Paid' : status}
-                          </Label>
-                        </TableCell>
-                        <TableCell style={{ minWidth: 140 }}>{fDate(deliveryDate)}</TableCell>
-                        <TableCell style={{ minWidth: 140 }}>{fDate(createdAt)}</TableCell>
-                        <TableCell style={{ minWidth: 140 }}>{fCurrency(amount)}</TableCell>
-                        <TableCell style={{ minWidth: 140 }}>{fCurrency(payableAmount)}</TableCell>
-
+                        <TableCell style={{ minWidth: 120 }}>{name}</TableCell>
+                        <TableCell style={{ minWidth: 140 }}>{fCurrency(price)}</TableCell>
+                        <TableCell style={{ minWidth: 140 }}>{_id}</TableCell>
                         <TableCell align="right">
-                          <ProductMoreMenu
-                            onDelete={() => handleDeleteProduct(_id)}
-                            productName={orderNumber.toString()}
-                          />
+                          <ProductMoreMenu onDelete={() => handleDeleteProduct(_id)} productName={name} />
                         </TableCell>
                       </TableRow>
                     );
@@ -323,7 +278,7 @@ export default function OrderList() {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={orders.length}
+            count={flavours.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

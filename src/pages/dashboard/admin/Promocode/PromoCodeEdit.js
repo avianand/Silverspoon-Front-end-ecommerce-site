@@ -17,7 +17,7 @@ import ProductNewForm from '../../../../components/_dashboard/admin/order/Custom
 
 // ----------------------------------------------------------------------
 
-export default function CustomOrderEdit() {
+export default function PromoCodeEdit() {
   const { themeStretch } = useSettings();
   const dispatch = useDispatch();
   const { pathname } = useLocation();
@@ -31,15 +31,15 @@ export default function CustomOrderEdit() {
   }, [dispatch]);
 
   return (
-    <Page title="Admin : View Custom Order | SSB">
+    <Page title="Admin : View Promo Code | SSB">
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
-          heading="View Custom Order"
+          heading="View Promo Code"
           links={[
             { name: 'Dashboard', href: PATH_DASHBOARD.root },
             {
-              name: 'E-Commerce',
-              href: PATH_DASHBOARD.eCommerce.root
+              name: 'Promo Code',
+              href: PATH_DASHBOARD.promocode.root
             }
             // { name: !isEdit ? 'New custom order' : name }
           ]}

@@ -42,18 +42,19 @@ import {
   ProductMoreMenu
 } from '../../../../components/_dashboard/e-commerce/product-list';
 import { IMAGE_CDN_URL } from '../../../../_apis_/urls';
-import { getOrders } from '../../../../redux/slices/admin/orders';
+import { getPromoCodes } from '../../../../redux/slices/admin/promocode';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'orderNumber', label: 'Order', alignRight: false },
-  { id: 'status', label: 'Status', alignRight: false },
-  { id: 'paymentDetails', label: 'Payment Status', alignRight: false },
-  { id: 'deliveryDate', label: 'Deliver by', alignRight: false },
-  { id: 'createdAt', label: 'Ordered on', alignRight: false },
-  { id: 'amount', label: 'Amount', alignRight: false },
-  { id: 'payableAmount', label: 'Payable Amount', alignRight: false },
+  { id: 'code', label: 'Promo Code', alignRight: false },
+  { id: 'description', label: 'Description', alignRight: false },
+  { id: 'discountPercentage', label: 'Discount (%)', alignRight: false },
+  { id: 'validFrom', label: 'Valid From', alignRight: false },
+  { id: 'validTill', label: 'Expires on', alignRight: false },
+  { id: '', label: 'Status', alignRight: false },
+  { id: 'isEnabled', label: 'Enabled', alignRight: false },
+  { id: 'usedByList', label: 'Usage #', alignRight: false },
   { id: '' }
 ];
 
@@ -103,22 +104,22 @@ function applySortFilter(array, comparator, query) {
 
 // ----------------------------------------------------------------------
 
-export default function OrderList() {
+export default function PromoCodeList() {
   const { themeStretch } = useSettings();
   const theme = useTheme();
   const dispatch = useDispatch();
   const { products } = useSelector((state) => state.product);
-  const { orders } = useSelector((state) => state.order);
+  const { promocodes } = useSelector((state) => state.promocode);
   const [subCategories, setsubCategories] = useState([]);
   const [page, setPage] = useState(0);
-  const [order, setOrder] = useState('desc');
+  const [order, setOrder] = useState('asc');
   const [selected, setSelected] = useState([]);
   const [filterName, setFilterName] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [orderBy, setOrderBy] = useState('createdAt');
 
   useEffect(() => {
-    dispatch(getOrders());
+    dispatch(getPromoCodes());
   }, [dispatch]);
 
   const handleRequestSort = (event, property) => {
@@ -129,7 +130,7 @@ export default function OrderList() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = products.map((n) => n.name);
+      const newSelecteds = promocodes.map((n) => n.name);
       setSelected(newSelecteds);
       return;
     }
@@ -168,42 +169,42 @@ export default function OrderList() {
     dispatch(deleteProduct(productId));
   };
 
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - orders.length) : 0;
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - promocodes.length) : 0;
 
-  const filteredProducts = applySortFilter(orders, getComparator(order, orderBy), filterName);
-  console.log({ filteredProducts });
+  const filteredProducts = applySortFilter(promocodes, getComparator(order, orderBy), filterName);
+
   const isProductNotFound = filteredProducts.length === 0;
 
   return (
-    <Page title="Admin: Order List | SSB">
+    <Page title="Admin: Promo Codes List | SSB">
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
-          heading="Order List"
+          heading="Promo Codes List"
           links={[
             { name: 'Dashboard', href: PATH_DASHBOARD.root },
             {
-              name: 'order',
-              href: PATH_DASHBOARD.order.list
+              name: 'Promo code',
+              href: PATH_DASHBOARD.promocode.root
             },
-            { name: 'Order List' }
+            { name: 'Promo Codes' }
           ]}
-          // action={
-          //   <Button
-          //     variant="contained"
-          //     component={RouterLink}
-          //     to={PATH_DASHBOARD.eCommerce.newProduct}
-          //     startIcon={<Icon icon={plusFill} />}
-          //   >
-          //     New Product
-          //   </Button>
-          // }
+          action={
+            <Button
+              variant="contained"
+              component={RouterLink}
+              to={PATH_DASHBOARD.promocode.create}
+              startIcon={<Icon icon={plusFill} />}
+            >
+              New promo code
+            </Button>
+          }
         />
 
         <Card>
           <ProductListToolbar
             numSelected={selected.length}
+            searchTerm="Search Promocode..."
             filterName={filterName}
-            searchTerm="Search order..."
             onFilterName={handleFilterByName}
           />
 
@@ -214,7 +215,7 @@ export default function OrderList() {
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
-                  rowCount={orders.length}
+                  rowCount={products.length}
                   numSelected={selected.length}
                   onRequestSort={handleRequestSort}
                   onSelectAllClick={handleSelectAllClick}
@@ -223,17 +224,18 @@ export default function OrderList() {
                   {filteredProducts.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
                     const {
                       _id,
-                      orderNumber,
-                      name,
-                      payableAmount,
-                      amount,
-                      createdAt,
+                      isEnabled,
+                      code,
                       status,
-                      deliveryDate,
-                      paymentDetails
+                      price,
+                      validFrom,
+                      validTo,
+                      discountPercentage,
+                      description,
+                      usedByList
                     } = row;
 
-                    const isItemSelected = selected.indexOf(name) !== -1;
+                    const isItemSelected = selected.indexOf(code) !== -1;
 
                     return (
                       <TableRow
@@ -245,56 +247,35 @@ export default function OrderList() {
                         aria-checked={isItemSelected}
                       >
                         <TableCell padding="checkbox">
-                          <Checkbox checked={isItemSelected} onChange={(event) => handleClick(event, name)} />
+                          <Checkbox checked={isItemSelected} onChange={(event) => handleClick(event, code)} />
                         </TableCell>
-                        {/* <TableCell component="th" scope="row" padding="none">
-                          <Box
-                            sx={{
-                              py: 2,
-                              display: 'flex',
-                              alignItems: 'center'
-                            }}
-                          >
-                            <ThumbImgStyle alt={name} src={`${IMAGE_CDN_URL}${images[0]}`} />
-                            <Typography variant="subtitle2" noWrap>
-                              {name}
-                            </Typography>
-                          </Box>
-                        </TableCell> */}
 
-                        <TableCell style={{ minWidth: 120 }}>{orderNumber.toString()}</TableCell>
+                        <TableCell style={{ minWidth: 140 }}>{code}</TableCell>
+                        <TableCell style={{ minWidth: 150 }}>{description}</TableCell>
+                        <TableCell style={{ minWidth: 120 }}>{discountPercentage}</TableCell>
+                        <TableCell style={{ minWidth: 120 }}>{fDate(validFrom)}</TableCell>
+                        <TableCell style={{ minWidth: 120 }}>{fDate(validTo)}</TableCell>
                         <TableCell style={{ minWidth: 120 }}>
                           <Label
                             variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}
-                            color={
-                              (status === 'accepted' && 'success') || (status === 'placed' && 'warning') || 'error'
-                            }
+                            color={(Date(validTo) < new Date() && 'success') || 'error'}
                           >
-                            {status === 'placed' ? 'Placed' : status}
+                            {Date(validTo) < new Date() ? 'Valid' : 'Expired'}
                           </Label>
                         </TableCell>
                         <TableCell style={{ minWidth: 120 }}>
                           <Label
                             variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}
-                            color={
-                              (paymentDetails?.status === 'captured' && 'success') ||
-                              (paymentDetails?.status === 'placed' && 'warning') ||
-                              'error'
-                            }
+                            color={(isEnabled && 'success') || 'error'}
                           >
-                            {paymentDetails?.status === 'captured' ? 'Paid' : status}
+                            {isEnabled ? 'Enabled' : 'Disabled'}
                           </Label>
                         </TableCell>
-                        <TableCell style={{ minWidth: 140 }}>{fDate(deliveryDate)}</TableCell>
-                        <TableCell style={{ minWidth: 140 }}>{fDate(createdAt)}</TableCell>
-                        <TableCell style={{ minWidth: 140 }}>{fCurrency(amount)}</TableCell>
-                        <TableCell style={{ minWidth: 140 }}>{fCurrency(payableAmount)}</TableCell>
+
+                        <TableCell style={{ minWidth: 120 }}>{usedByList.length || 'Not used yet'} times</TableCell>
 
                         <TableCell align="right">
-                          <ProductMoreMenu
-                            onDelete={() => handleDeleteProduct(_id)}
-                            productName={orderNumber.toString()}
-                          />
+                          <ProductMoreMenu onDelete={() => handleDeleteProduct(_id)} productName={code} />
                         </TableCell>
                       </TableRow>
                     );
@@ -323,7 +304,7 @@ export default function OrderList() {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={orders.length}
+            count={promocodes.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

@@ -5,7 +5,7 @@ import { useParams, useLocation } from 'react-router-dom';
 import { Container } from '@material-ui/core';
 // redux
 import { useDispatch, useSelector } from '../../../../redux/store';
-import { getProducts } from '../../../../redux/slices/product';
+import { getCustomer } from '../../../../redux/slices/customer';
 // routes
 import { PATH_DASHBOARD } from '../../../../routes/paths';
 // hooks
@@ -13,35 +13,35 @@ import useSettings from '../../../../hooks/useSettings';
 // components
 import Page from '../../../../components/Page';
 import HeaderBreadcrumbs from '../../../../components/HeaderBreadcrumbs';
-import ProductNewForm from '../../../../components/_dashboard/admin/order/CustomOrderForm';
+import ProductNewForm from '../../../../components/_dashboard/admin/order/OrderForm';
 
 // ----------------------------------------------------------------------
 
-export default function CustomOrderEdit() {
+export default function CustomerView() {
   const { themeStretch } = useSettings();
   const dispatch = useDispatch();
   const { pathname } = useLocation();
   const { name } = useParams();
-  const { products } = useSelector((state) => state.product);
+  const { customers } = useSelector((state) => state.customer);
   const isEdit = pathname.includes('edit');
   const currentProduct = products.find((product) => paramCase(product.name) === name);
 
   useEffect(() => {
-    dispatch(getProducts());
+    dispatch(getCustomer());
   }, [dispatch]);
 
   return (
-    <Page title="Admin : View Custom Order | SSB">
+    <Page title="Admin : Customer | SSB">
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
-          heading="View Custom Order"
+          heading="Customer"
           links={[
             { name: 'Dashboard', href: PATH_DASHBOARD.root },
             {
-              name: 'E-Commerce',
-              href: PATH_DASHBOARD.eCommerce.root
-            }
-            // { name: !isEdit ? 'New custom order' : name }
+              name: 'Customer',
+              href: PATH_DASHBOARD.customer.root
+            },
+            { name: !isEdit ? 'Customer' : name }
           ]}
         />
 

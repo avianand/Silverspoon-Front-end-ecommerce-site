@@ -10,9 +10,7 @@ import AuthGuard from '../guards/AuthGuard';
 // import RoleBasedGuard from '../guards/RoleBasedGuard';
 // components
 import LoadingScreen from '../components/LoadingScreen';
-import OrderList from '../pages/dashboard/admin/Order/OrderList';
-import OrderView from '../pages/dashboard/admin/Order/OrderView';
-import Banner from '../pages/dashboard/admin/Banner';
+
 
 // ----------------------------------------------------------------------
 
@@ -108,6 +106,67 @@ export default function Router() {
             { path: 'view/:id', element: <OrderView /> },
             { path: 'list', element: <OrderList /> },
             { path: 'invoice', element: <EcommerceInvoice /> }
+          ]
+        },
+        {
+          path: 'customorder',
+          children: [
+            { path: '/', element: <Navigate to="/dashboard/order/" replace /> },
+            { path: 'edit/:id', element: <CustomOrderEdit /> },
+            { path: 'list', element: <CustomOrderList /> },
+            { path: 'invoice', element: <EcommerceInvoice /> }
+          ]
+        },
+        {
+          path: 'flavour',
+          children: [
+            { path: '/', element: <Navigate to="/dashboard/flavour/" replace /> },
+            { path: 'list', element: <FlavourList /> },
+            { path: 'edit/:id', element: <FlavourView /> },
+            { path: 'create', element: <FlavourView /> }
+          ]
+        },
+        {
+          path: 'categories',
+          children: [
+            { path: '/', element: <Navigate to="/dashboard/categories/" replace /> },
+            { path: 'edit/:id', element: <CategoriesView /> },
+            { path: 'list', element: <CategoriesList /> },
+            { path: 'create', element: <CategoriesView /> }
+          ]
+        },
+        {
+          path: 'subcategories',
+          children: [
+            { path: '/', element: <Navigate to="/dashboard/subcategories/" replace /> },
+            { path: 'edit/:id', element: <CategoriesView /> },
+            { path: 'list', element: <CategoriesList /> },
+            { path: 'create', element: <CategoriesView /> }
+          ]
+        },
+        {
+          path: 'staff',
+          children: [
+            { path: '/', element: <Navigate to="/dashboard/staff/" replace /> },
+            { path: 'edit/:id', element: <StaffView /> },
+            { path: 'list', element: <StaffList /> },
+            { path: 'create', element: <StaffView /> }
+          ]
+        },
+        {
+          path: 'promocode',
+          children: [
+            { path: '/', element: <Navigate to="/dashboard/promocode/" replace /> },
+            { path: 'edit/:id', element: <PromoCodeEdit /> },
+            { path: 'list', element: <PromoCodeList /> },
+            { path: 'create', element: <PromoCodeEdit /> }
+          ]
+        },
+        {
+          path: 'customer',
+          children: [
+            { path: '/', element: <Navigate to="/dashboard/customer/" replace /> },
+            { path: 'list', element: <CustomerList /> },
           ]
         },
         {
@@ -246,6 +305,12 @@ const Register = Loadable(lazy(() => import('../pages/authentication/Register'))
 const ResetPassword = Loadable(lazy(() => import('../pages/authentication/ResetPassword')));
 const VerifyCode = Loadable(lazy(() => import('../pages/authentication/VerifyCode')));
 // Dashboard
+// import OrderList from '../pages/dashboard/admin/Order/OrderList';
+// import OrderView from '../pages/dashboard/admin/Order/OrderView';
+// import Banner from '../pages/dashboard/admin/Banner';
+// import CustomOrderEdit from '../pages/dashboard/admin/CustomOrder/CustomOrderEdit';
+// import CustomOrderList from '../pages/dashboard/admin/CustomOrder/CustomOrderList';
+
 const GeneralApp = Loadable(lazy(() => import('../pages/dashboard/GeneralApp')));
 const GeneralEcommerce = Loadable(lazy(() => import('../pages/dashboard/GeneralEcommerce')));
 const GeneralAnalytics = Loadable(lazy(() => import('../pages/dashboard/GeneralAnalytics')));
@@ -257,12 +322,21 @@ const EcommerceProductList = Loadable(lazy(() => import('../pages/dashboard/Ecom
 const EcommerceProductCreate = Loadable(lazy(() => import('../pages/dashboard/EcommerceProductCreate')));
 const EcommerceCheckout = Loadable(lazy(() => import('../pages/dashboard/EcommerceCheckout')));
 const EcommerceInvoice = Loadable(lazy(() => import('../pages/dashboard/EcommerceInvoice')));
-const BlogPosts = Loadable(lazy(() => import('../pages/dashboard/BlogPosts')));
-const BlogPost = Loadable(lazy(() => import('../pages/dashboard/BlogPost')));
-const BlogNewPost = Loadable(lazy(() => import('../pages/dashboard/BlogNewPost')));
-const UserProfile = Loadable(lazy(() => import('../pages/dashboard/UserProfile')));
-const UserCards = Loadable(lazy(() => import('../pages/dashboard/UserCards')));
-const UserList = Loadable(lazy(() => import('../pages/dashboard/UserList')));
+const OrderList = Loadable(lazy(() => import('../pages/dashboard/admin/Order/OrderList')));
+const OrderView = Loadable(lazy(() => import('../pages/dashboard/admin/Order/OrderView')));
+const StaffList = Loadable(lazy(() => import('../pages/dashboard/admin/Staff/StaffList')));
+const StaffView = Loadable(lazy(() => import('../pages/dashboard/admin/Staff/StaffView')));
+const PromoCodeList = Loadable(lazy(() => import('../pages/dashboard/admin/Promocode/PromoCodeList')));
+const PromoCodeEdit = Loadable(lazy(() => import('../pages/dashboard/admin/Promocode/PromoCodeEdit')));
+
+const CategoriesList = Loadable(lazy(() => import('../pages/dashboard/admin/Categories/CategoriesList')));
+const CategoriesView = Loadable(lazy(() => import('../pages/dashboard/admin/Categories/CategoriesView')));
+const Banner = Loadable(lazy(() => import('../pages/dashboard/admin/Banner')));
+const CustomOrderEdit = Loadable(lazy(() => import('../pages/dashboard/admin/CustomOrder/CustomOrderEdit')));
+const CustomOrderList = Loadable(lazy(() => import('../pages/dashboard/admin/CustomOrder/CustomOrderList')));
+const FlavourList = Loadable(lazy(() => import('../pages/dashboard/admin/Flavour/FlavourList')));
+const FlavourView = Loadable(lazy(() => import('../pages/dashboard/admin/Flavour/FlavourView')));
+const CustomerList = Loadable(lazy(() => import('../pages/dashboard/admin/Customers/CustomerList')));
 const UserAccount = Loadable(lazy(() => import('../pages/dashboard/UserAccount')));
 const UserCreate = Loadable(lazy(() => import('../pages/dashboard/UserCreate')));
 const Chat = Loadable(lazy(() => import('../pages/dashboard/Chat')));

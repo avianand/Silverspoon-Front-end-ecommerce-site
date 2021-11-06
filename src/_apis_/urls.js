@@ -4,7 +4,13 @@ export const ADMIN_URLS = {
   admin_login: '/admin/login',
   admin_get_user_details: '/admin/getcurrentuser',
   admin_order: '/admin/order',
-  admin_banner: '/admin/banner'
+  admin_banner: '/admin/banner',
+  admin_custom_order: 'customorder',
+  admin_category: '/admin/category',
+  admin_subcategory: '/admin/subcategory',
+  admin_staff: '/admin/user',
+  admin_customer_url: 'customer',
+  admin_promo_code: '/admin/promocode'
 };
 
 export const urls = {

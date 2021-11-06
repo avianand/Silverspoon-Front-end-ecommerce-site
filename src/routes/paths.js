@@ -73,13 +73,53 @@ export const PATH_DASHBOARD = {
     invoice: path(ROOTS_DASHBOARD, '/e-commerce/invoice')
   },
   order: {
-    root: path(ROOTS_DASHBOARD, '/e-commerce'),
+    root: path(ROOTS_DASHBOARD, '/order'),
     productById: path(ROOTS_DASHBOARD, '/e-commerce/product/nike-air-force-1-ndestrukt'),
     list: path(ROOTS_DASHBOARD, '/order/list'),
     newProduct: path(ROOTS_DASHBOARD, '/e-commerce/product/new'),
     view: path(ROOTS_DASHBOARD, '/order/view/:id'),
     checkout: path(ROOTS_DASHBOARD, '/e-commerce/checkout'),
     invoice: path(ROOTS_DASHBOARD, '/e-commerce/invoice')
+  },
+  customorder: {
+    root: path(ROOTS_DASHBOARD, '/customorder'),
+    list: path(ROOTS_DASHBOARD, '/customorder/list'),
+    edit: path(ROOTS_DASHBOARD, '/customorder/edit/:id'),
+    invoice: path(ROOTS_DASHBOARD, '/e-commerce/invoice')
+  },
+  flavour: {
+    root: path(ROOTS_DASHBOARD, '/flavour'),
+    list: path(ROOTS_DASHBOARD, '/flavour/list'),
+    create: path(ROOTS_DASHBOARD, '/flavour/create'),
+    edit: path(ROOTS_DASHBOARD, '/flavour/edit/:id')
+  },
+  categories: {
+    root: path(ROOTS_DASHBOARD, '/categories'),
+    list: path(ROOTS_DASHBOARD, '/categories/list'),
+    create: path(ROOTS_DASHBOARD, '/categories/create'),
+    edit: path(ROOTS_DASHBOARD, '/categories/edit/:id')
+  },
+  subcategories: {
+    root: path(ROOTS_DASHBOARD, '/subcategories'),
+    list: path(ROOTS_DASHBOARD, '/subcategories/list'),
+    create: path(ROOTS_DASHBOARD, '/subcategories/new'),
+    edit: path(ROOTS_DASHBOARD, '/subcategories/edit/:id')
+  },
+  staff: {
+    root: path(ROOTS_DASHBOARD, '/staff'),
+    list: path(ROOTS_DASHBOARD, '/staff/list'),
+    edit: path(ROOTS_DASHBOARD, '/staff/edit/:id'),
+    create: path(ROOTS_DASHBOARD, '/staff/create')
+  },
+  promocode: {
+    root: path(ROOTS_DASHBOARD, '/promocode'),
+    list: path(ROOTS_DASHBOARD, '/promocode/list'),
+    edit: path(ROOTS_DASHBOARD, '/promocode/edit/:id'),
+    create: path(ROOTS_DASHBOARD, '/promocode/create')
+  },
+  customer: {
+    root: path(ROOTS_DASHBOARD, '/customer'),
+    list: path(ROOTS_DASHBOARD, '/customer/list')
   },
   blog: {
     root: path(ROOTS_DASHBOARD, '/blog'),

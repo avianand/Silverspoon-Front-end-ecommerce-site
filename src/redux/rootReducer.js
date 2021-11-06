@@ -10,7 +10,12 @@ import orderReducer from './slices/admin/orders';
 import productReducer from './slices/product';
 import calendarReducer from './slices/calendar';
 import kanbanReducer from './slices/kanban';
-
+import customOrderReducer from './slices/admin/customorders';
+import categoriesReducer from './slices/admin/categories';
+import flavourReducer from './slices/admin/flavours';
+import staffReducer from './slices/admin/staff';
+import customerReducer from './slices/admin/customer';
+import promoCodeReducer from './slices/admin/promocode';
 // ----------------------------------------------------------------------
 
 const rootPersistConfig = {
@@ -33,8 +38,14 @@ const rootReducer = combineReducers({
   blog: blogReducer,
   user: userReducer,
   order: orderReducer,
+  categories: categoriesReducer,
+  flavour: flavourReducer,
+  staff: staffReducer,
+  customOrder: customOrderReducer,
+  customer: customerReducer,
   calendar: calendarReducer,
   kanban: kanbanReducer,
+  promocode: promoCodeReducer,
   product: persistReducer(productPersistConfig, productReducer)
 });
 
